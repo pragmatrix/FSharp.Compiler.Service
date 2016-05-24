@@ -155,7 +155,7 @@ namespace Microsoft.FSharp.Compiler.SimpleSourceCodeServices
         
             errors.ToArray(), result
 
-        let compileFromAsts (asts, assemblyName, outFile, dependencies, noframework, pdbFile, executable, tcImportsCapture, dynamicAssemblyCreator) =
+        let compileFromAsts (asts, assemblyName, outFile, dependencies, noframework, debugInfo, pdbFile, executable, tcImportsCapture, dynamicAssemblyCreator) =
 
             let errors, errorLogger, loggerProvider = mkCompilationErorHandlers()
      
@@ -164,7 +164,7 @@ namespace Microsoft.FSharp.Compiler.SimpleSourceCodeServices
      
             let result = 
                 tryCompile errorLogger (fun exiter -> 
-                    compileOfAst ((*openBinariesInMemory=*)true, assemblyName, target, outFile, pdbFile, dependencies, noframework, exiter, loggerProvider, asts, tcImportsCapture, dynamicAssemblyCreator))
+                    compileOfAst ((*openBinariesInMemory=*)true, assemblyName, target, outFile, debugInfo, pdbFile, dependencies, noframework, exiter, loggerProvider, asts, tcImportsCapture, dynamicAssemblyCreator))
 
             errors.ToArray(), result
 
@@ -180,6 +180,13 @@ namespace Microsoft.FSharp.Compiler.SimpleSourceCodeServices
             let assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(assemblyName, flags)
             let moduleBuilder = assemblyBuilder.DefineDynamicModule("IncrementalModule", debugInfo)
 #endif            
+
+            if debugInfo then
+                let daType = typeof<System.Diagnostics.DebuggableAttribute>;
+                let daCtor = daType.GetConstructor [| typeof<System.Diagnostics.DebuggableAttribute.DebuggingModes> |]
+                let daBuilder = new CustomAttributeBuilder(daCtor, [| System.Diagnostics.DebuggableAttribute.DebuggingModes.DisableOptimizations ||| System.Diagnostics.DebuggableAttribute.DebuggingModes.Default |])
+                assemblyBuilder.SetCustomAttribute(daBuilder);
+
             // Omit resources in dynamic assemblies, because the module builder is constructed without a filename the module 
             // is tagged as transient and as such DefineManifestResource will throw an invalid operation if resources are present.
             // 
@@ -280,9 +287,10 @@ namespace Microsoft.FSharp.Compiler.SimpleSourceCodeServices
         member x.Compile (argv: string[])  = 
             compileFromArgs (argv, None, None)
 
-        member x.Compile (ast:ParsedInput list, assemblyName:string, outFile:string, dependencies:string list, ?pdbFile:string, ?executable:bool, ?noframework:bool) =
+        member x.Compile (ast:ParsedInput list, assemblyName:string, outFile:string, dependencies:string list, ?pdbFile:string, ?executable:bool, ?noframework:bool, ?debugInfo:bool) =
             let noframework = defaultArg noframework false
-            compileFromAsts (ast, assemblyName, outFile, dependencies, noframework, pdbFile, executable, None, None)
+            let debugInfo = defaultArg debugInfo false
+            compileFromAsts (ast, assemblyName, outFile, dependencies, noframework, debugInfo, pdbFile, executable, None, None)
 
         member x.CompileToDynamicAssembly (otherFlags: string[], execute: (TextWriter * TextWriter) option)  = 
             setOutputStreams execute
@@ -327,7 +335,7 @@ namespace Microsoft.FSharp.Compiler.SimpleSourceCodeServices
 
             // Perform the compilation, given the above capturing function.
             let errorsAndWarnings, result = 
-                compileFromAsts (asts, assemblyName, outFile, dependencies, noframework, None, Some execute.IsSome, tcImportsCapture, dynamicAssemblyCreator)
+                compileFromAsts (asts, assemblyName, outFile, dependencies, noframework, debugInfo, None, Some execute.IsSome, tcImportsCapture, dynamicAssemblyCreator)
 
             // Retrieve and return the results
             let assemblyOpt = 

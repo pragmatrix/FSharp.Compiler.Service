@@ -110,7 +110,7 @@ type SimpleSourceCodeServices =
     member Compile: argv:string [] -> FSharpErrorInfo [] * int
     
     /// TypeCheck and compile provided AST
-    member Compile: ast:ParsedInput list * assemblyName:string * outFile:string * dependencies:string list * ?pdbFile:string * ?executable:bool * ?noframework:bool -> FSharpErrorInfo [] * int
+    member Compile: ast:ParsedInput list * assemblyName:string * outFile:string * dependencies:string list * ?pdbFile:string * ?executable:bool * ?noframework:bool * ?debugInfo:bool -> FSharpErrorInfo [] * int
 
     /// Compiles to a dynamic assembly usinng the given flags.  
     ///
