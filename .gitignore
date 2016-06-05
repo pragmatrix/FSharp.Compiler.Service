@@ -33,7 +33,6 @@ vsrelease
 Proto
 sign_temp
 .libs
-Makefile
 configure
 launcher
 autom4te.cache
