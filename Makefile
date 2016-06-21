@@ -1,7 +1,7 @@
 MSB=msbuild.exe /m /verbosity:m /nologo
 NUGET=nuget.exe
 
-VER=1.0.0
+VER=1.0.1
 NAME=FSharp.Compiler.Service
 
 FEEDSOURCE=https://www.myget.org/F/livepipes/api/v2/package
