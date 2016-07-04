@@ -61,6 +61,23 @@ NUGET
       System.Runtime (>= 4.1) - framework: >= netstandard10
       System.Runtime.Extensions (>= 4.1) - framework: >= netstandard10
       System.Threading (>= 4.0.11) - framework: >= netstandard10
+    System.Reflection.Metadata (1.4.1-beta-24227-04)
+      System.Collections (>= 4.0.11) - framework: >= netstandard11
+      System.Collections.Immutable (>= 1.1.37) - framework: portable-net45+win8
+      System.Collections.Immutable (>= 1.2) - framework: >= net45, >= netstandard11, monoandroid, monotouch, xamarinios, xamarinmac, winv4.5, wpav8.1
+      System.Diagnostics.Debug (>= 4.0.11) - framework: >= netstandard11
+      System.IO (>= 4.1) - framework: >= netstandard11
+      System.Linq (>= 4.1) - framework: >= netstandard11
+      System.Reflection (>= 4.1) - framework: >= netstandard11
+      System.Reflection.Extensions (>= 4.0.1) - framework: >= netstandard11
+      System.Reflection.Primitives (>= 4.0.1) - framework: >= netstandard11
+      System.Resources.ResourceManager (>= 4.0.1) - framework: >= netstandard11
+      System.Runtime (>= 4.1) - framework: >= netstandard11
+      System.Runtime.Extensions (>= 4.1) - framework: >= netstandard11
+      System.Runtime.InteropServices (>= 4.1) - framework: >= netstandard11
+      System.Text.Encoding (>= 4.0.11) - framework: >= netstandard11
+      System.Text.Encoding.Extensions (>= 4.0.11) - framework: >= netstandard11
+      System.Threading (>= 4.0.11) - framework: >= netstandard11
   remote: https://www.myget.org/F/dotnet-core
     Microsoft.NETCore.Platforms (1.0.1) - framework: >= netstandard10
     Microsoft.NETCore.Targets (1.0.1) - framework: >= netstandard10
@@ -114,23 +131,6 @@ NUGET
       Microsoft.NETCore.Targets (>= 1.0.1) - framework: dnxcore50, >= netstandard10
       System.Reflection (>= 4.1) - framework: dnxcore50, >= netstandard10
       System.Runtime (>= 4.1) - framework: dnxcore50, >= netstandard10
-    System.Reflection.Metadata (1.4.1-beta-24227-04)
-      System.Collections (>= 4.0.11) - framework: >= netstandard11
-      System.Collections.Immutable (>= 1.1.37) - framework: portable-net45+win8
-      System.Collections.Immutable (>= 1.2) - framework: >= net45, >= netstandard11, monoandroid, monotouch, xamarinios, xamarinmac, winv4.5, wpav8.1
-      System.Diagnostics.Debug (>= 4.0.11) - framework: >= netstandard11
-      System.IO (>= 4.1) - framework: >= netstandard11
-      System.Linq (>= 4.1) - framework: >= netstandard11
-      System.Reflection (>= 4.1) - framework: >= netstandard11
-      System.Reflection.Extensions (>= 4.0.1) - framework: >= netstandard11
-      System.Reflection.Primitives (>= 4.0.1) - framework: >= netstandard11
-      System.Resources.ResourceManager (>= 4.0.1) - framework: >= netstandard11
-      System.Runtime (>= 4.1) - framework: >= netstandard11
-      System.Runtime.Extensions (>= 4.1) - framework: >= netstandard11
-      System.Runtime.InteropServices (>= 4.1) - framework: >= netstandard11
-      System.Text.Encoding (>= 4.0.11) - framework: >= netstandard11
-      System.Text.Encoding.Extensions (>= 4.0.11) - framework: >= netstandard11
-      System.Threading (>= 4.0.11) - framework: >= netstandard11
     System.Reflection.Primitives (4.0.1) - framework: >= netstandard10
       Microsoft.NETCore.Platforms (>= 1.0.1) - framework: dnxcore50, >= netstandard10
       Microsoft.NETCore.Targets (>= 1.0.1) - framework: dnxcore50, >= netstandard10
