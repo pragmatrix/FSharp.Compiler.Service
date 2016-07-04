@@ -25,11 +25,11 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <Tailcalls>false</Tailcalls>
+    <Tailcalls>true</Tailcalls>
     <DefineConstants>TRACE;DEBUG;DOTNETCORE</DefineConstants>
     <WarningLevel>3</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <Prefer32Bit>false</Prefer32Bit>
+    <Prefer32Bit>true</Prefer32Bit>
     <OutputPath>bin\v4.5.2\</OutputPath>
     <DocumentationFile>bin\v4.5.2\FSharp.Compiler.Service.ProjectCrackerTool.xml</DocumentationFile>
     <OtherFlags />
@@ -39,12 +39,13 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <Tailcalls>true</Tailcalls>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;DOTNETCORE</DefineConstants>
     <WarningLevel>3</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <Prefer32Bit>true</Prefer32Bit>
+    <Prefer32Bit>false</Prefer32Bit>
     <OutputPath>bin\v4.5.2\</OutputPath>
     <DocumentationFile>bin\v4.5.2\FSharp.Compiler.Service.ProjectCrackerTool.xml</DocumentationFile>
+    <OtherFlags />
   </PropertyGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
