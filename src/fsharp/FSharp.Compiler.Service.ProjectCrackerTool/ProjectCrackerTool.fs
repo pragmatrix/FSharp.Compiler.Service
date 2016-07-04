@@ -5,9 +5,9 @@ open System.IO
 open System.Reflection
 open System.Text
 open Microsoft.Build.Framework
-open Microsoft.Build.Utilities
+// open Microsoft.Build.Utilities
 
-module internal ProjectCrackerTool =
+module ProjectCrackerTool =
 
   let runningOnMono =
 #if DOTNETCORE
@@ -17,7 +17,8 @@ module internal ProjectCrackerTool =
     with e -> false
 #endif
 
-  type internal BasicStringLogger() =
+#if false
+  type BasicStringLogger() =
     inherit Logger()
 
     let sb = new StringBuilder()
@@ -29,8 +30,9 @@ module internal ProjectCrackerTool =
     override x.Initialize(eventSource:IEventSource) =
       sb.Clear() |> ignore
       eventSource.AnyEventRaised.Add(log)
-    
+
     member x.Log = sb.ToString()
+#endif
 
   type internal HostCompile() =
       member th.Compile(_:obj, _:obj, _:obj) = 0
@@ -49,12 +51,15 @@ module internal ProjectCrackerTool =
           else Path.Combine(dir, v)
 
       let logOpt =
+          None
+#if false
           if enableLogging then
               let log = new BasicStringLogger()
               do log.Verbosity <- Microsoft.Build.Framework.LoggerVerbosity.Diagnostic
               Some log
           else
               None
+#endif
 
 #if !DOTNETCORE
       let mkAbsoluteOpt dir v =  Option.map (mkAbsolute dir) v
@@ -138,25 +143,25 @@ module internal ProjectCrackerTool =
               { new System.IDisposable with
                     member x.Dispose() = Directory.SetCurrentDirectory(dir) }
           use engine = new Microsoft.Build.Evaluation.ProjectCollection()
+          // armin: for some reason we must set the DefaultToolsVersion here, otherwise .NET 2 assemblies are
+          // referenced, "14.0" is fine for us.
+          engine.DefaultToolsVersion <- "14.0"
           let host = new HostCompile()
           engine.HostServices.RegisterHostObject(fsprojFullPath, "CoreCompile", "Fsc", host)
 
 
           let projectInstanceFromFullPath (fsprojFullPath: string) =
-              use file = new FileStream(fsprojFullPath, FileMode.Open, FileAccess.Read, FileShare.Read)
-              use stream = new StreamReader(file)
+              use stream = new IO.StreamReader(fsprojFullPath)
               use xmlReader = System.Xml.XmlReader.Create(stream)
-
-              let project = engine.LoadProject(xmlReader, FullPath=fsprojFullPath)
               
-              project.SetGlobalProperty("BuildingInsideVisualStudio", "true") |> ignore
-              if not (List.exists (fun (p,_) -> p = "VisualStudioVersion") properties) then
-                  match vs with
-                  | Some version -> project.SetGlobalProperty("VisualStudioVersion", version) |> ignore
-                  | None -> ()
-              project.SetGlobalProperty("ShouldUnsetParentConfigurationAndPlatform", "false") |> ignore
-              for (prop, value) in properties do
-                    project.SetGlobalProperty(prop, value) |> ignore
+              let props = System.Collections.Generic.Dictionary()
+              for (k,v) in properties do 
+                 props.Add (k, v)
+              if not (props.ContainsKey "VisualStudioVersion") then do
+                   vs |> Option.iter (fun v -> props.Add ("VisualStudioVersion", v))
+              props.Add ("BuildingInsideVisualStudio", "true")
+              props.Add ("ShouldUnsetParentConfigurationAndPlatform", "false")
+              let project = engine.LoadProject(xmlReader, props, engine.DefaultToolsVersion, FullPath=fsprojFullPath)
 
               project.CreateProjectInstance()
 
@@ -216,7 +221,7 @@ module internal ProjectCrackerTool =
 #endif
           | :? ArgumentException as e -> raise (IO.FileNotFoundException(e.Message))
 
-      let logOutput = match logOpt with None -> "" | Some l -> l.Log
+      let logOutput = "" // match logOpt with None -> "" | Some l -> l.Log
       let pages = getItems "Page"
       let embeddedResources = getItems "EmbeddedResource"
       let files = getItems "Compile"

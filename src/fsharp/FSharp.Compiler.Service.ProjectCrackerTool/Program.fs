@@ -2,13 +2,17 @@
 
 open System
 open System.IO
+open System.Reflection
 open System.Runtime.Serialization.Json
 
 module Program =
+  open Microsoft.Build.Framework
+
   let runningOnMono = 
       try match System.Type.GetType("Mono.Runtime") with null -> false | _ -> true
       with e -> false
 
+#if false
   type internal BasicStringLogger() =
     inherit Logger()
 
@@ -24,9 +28,12 @@ module Program =
     
     member x.Log = sb.ToString()
 
+#endif
+
   type internal HostCompile() =
       member th.Compile(_:obj, _:obj, _:obj) = 0
       interface ITaskHost
+
 
   //----------------------------------------------------------------------------
   // FSharpProjectFileInfo
@@ -43,12 +50,15 @@ module Program =
       let mkAbsoluteOpt dir v =  Option.map (mkAbsolute dir) v
 
       let logOpt =
+            None
+            (*
           if enableLogging then
               let log = new BasicStringLogger()
               do log.Verbosity <- Microsoft.Build.Framework.LoggerVerbosity.Diagnostic
               Some log
           else
               None
+      *)
 
       let CrackProjectUsingOldBuildAPI(fsprojFile:string) = 
           let engine = new Microsoft.Build.BuildEngine.Engine()
@@ -198,7 +208,7 @@ module Program =
           | :? ArgumentException as e -> raise (IO.FileNotFoundException(e.Message))
 
 
-      let logOutput = match logOpt with None -> "" | Some l -> l.Log
+      let logOutput = "" // match logOpt with None -> "" | Some l -> l.Log
       let pages = getItems "Page"
       let embeddedResources = getItems "EmbeddedResource"
       let files = getItems "Compile"
@@ -423,18 +433,3 @@ module Program =
     match l with
     | [] | [_] -> []
     | x::y::rest -> (x,y) :: pairs rest
->>>>>>> 16bd74d... Project cracker: Set properties before loading the project.
-
-    [<EntryPoint>]
-    let main argv =
-        let text = Array.exists (fun (s: string) -> s = "--text") argv
-        let argv = Array.filter (fun (s: string) -> s <> "--text") argv
-
-        let ret, opts = ProjectCrackerTool.crackOpen argv
-
-        if text then
-            printfn "%A" opts
-        else
-            let ser = new DataContractJsonSerializer(typeof<ProjectOptions>)
-            ser.WriteObject(Console.OpenStandardOutput(), opts)
-        ret
