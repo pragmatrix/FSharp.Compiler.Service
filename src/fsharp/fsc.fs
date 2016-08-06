@@ -1953,7 +1953,7 @@ let main1(tcGlobals, tcImports: TcImports, frameworkTcImports, generatedCcu, typ
 
 
 // set up typecheck for given AST without parsing any command line parameters
-let main1OfAst (openBinariesInMemory, assemblyName, target, outfile, debug, pdbFile, dllReferences, noframework, exiter, errorLoggerProvider: ErrorLoggerProvider, inputs : ParsedInput list) =
+let main1OfAst (openBinariesInMemory, assemblyName, target, outfile, pdbFile, dllReferences, noframework, exiter, errorLoggerProvider: ErrorLoggerProvider, inputs : ParsedInput list) =
 
     let tcConfigB = TcConfigBuilder.CreateNew(defaultFSharpBinariesDir, (*optimizeForMemory*) false, Directory.GetCurrentDirectory(), isInteractive=false, isInvalidationSupported=false)
     tcConfigB.openBinariesInMemory <- openBinariesInMemory
@@ -2161,8 +2161,8 @@ let typecheckAndCompile(argv,bannerAlreadyPrinted,openBinariesInMemory,exiter:Ex
     |> main4 dynamicAssemblyCreator
 
 
-let compileOfAst (openBinariesInMemory, assemblyName, target, outFile, debug, pdbFile, dllReferences, noframework, exiter, errorLoggerProvider, inputs, tcImportsCapture, dynamicAssemblyCreator) = 
-    main1OfAst (openBinariesInMemory, assemblyName, target, outFile, debug, pdbFile, dllReferences, noframework, exiter, errorLoggerProvider, inputs)
+let compileOfAst (openBinariesInMemory, assemblyName, target, outFile, pdbFile, dllReferences, noframework, exiter, errorLoggerProvider, inputs, tcImportsCapture, dynamicAssemblyCreator) = 
+    main1OfAst (openBinariesInMemory, assemblyName, target, outFile, pdbFile, dllReferences, noframework, exiter, errorLoggerProvider, inputs)
     |> main2
     |> main2b (tcImportsCapture, dynamicAssemblyCreator)
     |> main3

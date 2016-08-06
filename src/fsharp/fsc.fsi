@@ -54,7 +54,6 @@ val compileOfAst :
     assemblyName:string * 
     target:CompilerTarget * 
     targetDll:string * 
-    debugInfo: bool *
     targetPdb:string option * 
     dependencies:string list * 
     noframework:bool *
