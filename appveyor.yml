@@ -5,9 +5,8 @@ init:
 
 environment:
   matrix:
-    - BUILD_TARGET: DotnetCliTests
-    - BUILD_TARGET: NuGet
-
+    - BUILD_TARGET: CreatePackage
+    
 build_script:
   - ps: dotnet --info
   - cmd: build.cmd %BUILD_TARGET%

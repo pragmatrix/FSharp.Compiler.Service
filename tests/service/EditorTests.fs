@@ -37,7 +37,7 @@ open FSharp.Compiler.Service.Tests.Common
 let stringMethods = 
 #if DOTNETCORE
     ["Chars"; "CompareTo"; "Contains"; "CopyTo"; "EndsWith"; "Equals";
-    "GetHashCode"; "GetType"; "GetTypeCode"; "IndexOf";
+    "GetHashCode"; "GetType"; "IndexOf";
     "IndexOfAny"; "Insert"; "LastIndexOf"; "LastIndexOfAny";
     "Length"; "PadLeft"; "PadRight"; "Remove"; "Replace"; "Split";
     "StartsWith"; "Substring"; "ToCharArray"; "ToLower"; "ToLowerInvariant";
@@ -69,6 +69,7 @@ let ``Intro test`` () =
     let file = "/home/user/Test.fsx"
     let parseResult, typeCheckResults =  parseAndCheckScript(file, input) 
     let identToken = FSharpTokenTag.IDENT
+//    let projectOptions = checker.GetProjectOptionsFromScript(file, input) |> Async.RunSynchronously
 
     // We only expect one reported error. However,
     // on Unix, using filenames like /home/user/Test.fsx gives a second copy of all parse errors due to the
@@ -233,7 +234,7 @@ let ``Symbols many tests`` () =
 
     let typeCheckContext = typeCheckResults2.ProjectContext
     
-    typeCheckContext.GetReferencedAssemblies() |> List.exists (fun s -> s.FileName.Value.Contains("mscorlib")) |> shouldEqual true
+    typeCheckContext.GetReferencedAssemblies() |> List.exists (fun s -> s.FileName.Value.Contains(coreLibAssemblyName)) |> shouldEqual true
     
 
 let input3 = 

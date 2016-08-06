@@ -1,3 +1,15 @@
+#### 6.0.1
+  * [Fix ProjectFileNames order when getting project options from script](https://github.com/fsharp/FSharp.Compiler.Service/pull/594)
+
+#### 6.0.0
+  * Switch to new major version on assumption integrated F# compiler changes induce API change
+
+#### 5.0.2
+  * Integrate Microsoft\visualfsharp to 688c26bdbbfc766326fc45e4d918f87fcba1e7ba. F# 4.1 work
+
+#### 5.0.1
+* [Fixed dependencies in nuget package](https://github.com/fsharp/FSharp.Compiler.Service/pull/608)
+
 #### 5.0.0
 * Fixed empty symbol declared pdb #564 from kekyo/fix-empty-pdb
 * .NET Core ProjectCracker - updated version and dependencies
