@@ -141,7 +141,7 @@ Target "RunTests" (fun _ ->
 Target "NuGet" (fun _ ->
     Paket.Pack (fun p -> 
         { p with 
-            TemplateFile = "nuget/paket.template"
+            TemplateFile = "nuget/FSharp.Compiler.Service.template"
             Version = release.NugetVersion
             OutputPath = buildDir
             ReleaseNotes = toLines release.Notes })
@@ -214,7 +214,8 @@ Target "GitHubRelease" (fun _ ->
     // release on github
     createClient user pw
     |> createDraft gitOwner gitName release.NugetVersion (release.SemVer.PreRelease <> None) release.Notes 
-    |> releaseDraft
+    |> uploadFile (buildDir</>("FSharp.Compiler.Service." + release.NugetVersion + ".nupkg"))
+    |> releaseDraft    
     |> Async.RunSynchronously
 )
 
@@ -226,7 +227,7 @@ let assertExitCodeZero x = if x = 0 then () else failwithf "Command failed with 
 let runCmdIn workDir exe = Printf.ksprintf (fun args -> Shell.Exec(exe, args, workDir) |> assertExitCodeZero)
 let run exe = runCmdIn "." exe
 
-Target "DotnetCoreCodeGen" (fun _ ->
+Target "CodeGen.NetCore" (fun _ ->
     let lexArgs = "--lexlib Internal.Utilities.Text.Lexing"
     let yaccArgs = "--internal --parslib Internal.Utilities.Text.Parsing"
     let module1 = "--module Microsoft.FSharp.Compiler.AbstractIL.Internal.AsciiParser"
@@ -284,9 +285,17 @@ Target "Nuget.AddNetCore" (fun _ ->
 
 Target "Prepare" DoNothing
 Target "PrepareRelease" DoNothing
-Target "All" DoNothing
 Target "Release" DoNothing
 Target "CreatePackage" DoNothing
+Target "All" DoNothing
+Target "All.NetCore" DoNothing
+
+"Clean"
+  ==> "AssemblyInfo"
+  ==> "CodeGen.NetCore"
+  ==> "Build.NetCore"
+  ==> "RunTests.NetCore"
+  ==> "All.NetCore"
 
 "Clean"
   =?> ("BuildVersion", isAppVeyorBuild)
@@ -294,10 +303,8 @@ Target "CreatePackage" DoNothing
   ==> "GenerateFSIStrings"
   ==> "Prepare"
   ==> "Build"
-  =?> ("DotnetCoreCodeGen", isDotnetSDKInstalled)
-  =?> ("Build.NetCore", isDotnetSDKInstalled)
   ==> "RunTests"
-  =?> ("RunTests.NetCore", isDotnetSDKInstalled)
+  =?> ("All.NetCore", isDotnetSDKInstalled)
   ==> "All"
 
 "All"

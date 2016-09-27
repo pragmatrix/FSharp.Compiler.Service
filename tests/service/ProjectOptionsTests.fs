@@ -19,6 +19,7 @@ open Microsoft.FSharp.Compiler.SourceCodeServices
 open FSharp.Compiler.Service.Tests.Common
 
 #if FX_ATLEAST_45
+#if !NO_PROJECTCRACKER
 
 let normalizePath s = (new Uri(s)).LocalPath
 
@@ -386,20 +387,20 @@ let ``Project file parsing -- Exe with a PCL reference``() =
 [<Test>]
 let ``Project file parsing -- project file contains project reference to out-of-solution project and is used in release mode``() =
 
-    let f = normalizePath(__SOURCE_DIRECTORY__ + @"/data/TestProject/TestProject.fsproj")
+    let f = normalizePath(__SOURCE_DIRECTORY__ + @"/data/Test2.fsproj")
     let p = ProjectCracker.GetProjectOptionsFromProjectFile(f,[("Configuration","Release")])
     let references = getReferencedFilenamesAndContainingFolders p.OtherOptions |> set
     // Check the reference is to a release DLL
-    references |> should contain ("TestTP.dll", "Release")
+    references |> should contain ("Test1.dll", "Release")
 
 [<Test>]
 let ``Project file parsing -- project file contains project reference to out-of-solution project and is used in debug mode``() =
 
-    let f = normalizePath(__SOURCE_DIRECTORY__ + @"/data/TestProject/TestProject.fsproj")
+    let f = normalizePath(__SOURCE_DIRECTORY__ + @"/data/Test2.fsproj")
     let p = ProjectCracker.GetProjectOptionsFromProjectFile(f,[("Configuration","Debug")])
     let references = getReferencedFilenamesAndContainingFolders p.OtherOptions |> set
     // Check the reference is to a debug DLL
-    references |> should contain ("TestTP.dll", "Debug")
+    references |> should contain ("Test1.dll", "Debug")
 
 [<Test>]
 let ``Project file parsing -- space in file name``() =
@@ -417,6 +418,8 @@ let ``Project file parsing -- report files``() =
      printfn "File: %s" f
    for f in Directory.EnumerateFiles(@"C:\Program Files (x86)\Microsoft SDKs\F#\4.0\","*",SearchOption.AllDirectories) do 
      printfn "File: %s" f
+
+#endif
 
 [<Test>]
 let ``Test ProjectFileNames order for GetProjectOptionsFromScript`` () = // See #594
