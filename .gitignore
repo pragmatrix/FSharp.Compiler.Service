@@ -198,3 +198,4 @@ src/fsharp/FSharp.Compiler.Service/FSIstrings.resx
 Tools/
 Backup/
 /*.ncrunchsolution.user
+*.nuget.props
