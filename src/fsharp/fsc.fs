@@ -1951,8 +1951,14 @@ let main1OfAst (openBinariesInMemory, assemblyName, target, outfile, pdbFile, dl
     let tcConfigB = TcConfigBuilder.CreateNew(defaultFSharpBinariesDir, (*optimizeForMemory*) false, Directory.GetCurrentDirectory(), isInteractive=false, isInvalidationSupported=false)
     tcConfigB.openBinariesInMemory <- openBinariesInMemory
     tcConfigB.framework <- not noframework 
+    // LivePipes: we don't want the optimize at work, so that
+    // instrumentation works properly and we get the fastest compilation.
+    // Tailcalls are good for now to avoid stack overflows I guess, but may
+    // interfere with with instrumentation.
+    SetOptimizeSwitch tcConfigB OptionSwitch.Off
+
     // Preset: --optimize+ -g --tailcalls+ (see 4505)
-    SetOptimizeSwitch tcConfigB OptionSwitch.On
+    // SetOptimizeSwitch tcConfigB OptionSwitch.On
     SetDebugSwitch    tcConfigB None (
         match pdbFile with
         | Some _ -> OptionSwitch.On
